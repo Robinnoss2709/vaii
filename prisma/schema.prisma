@@ -1,0 +1,18 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model ScheduleItem {
+  id        Int    @id @default(autoincrement())
+  day       String
+  hour      String
+  subject   String
+  teacher   String
+  classroom String
+  type      String // 'lecture' or 'exercise'
+}

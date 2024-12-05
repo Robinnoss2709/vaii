@@ -1,4 +1,4 @@
-import prisma from '../../../../lib/prisma/prisma'; // Predpokladáme, že Prisma Client je inicializovaný v $lib/prisma.ts
+import prisma from '../../../../lib/prisma/prisma';
 import type { RequestHandler } from './$types';
 
 export const DELETE: RequestHandler = async ({ params }) => {

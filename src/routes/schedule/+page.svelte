@@ -1,5 +1,4 @@
 <script lang="ts">
-	// Váš existujúci kód ostáva nezmenený
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -10,7 +9,7 @@
 		subject: string;
 		teacher: string;
 		classroom: string;
-		type: string; // 'lecture' or 'exercise'
+		type: string;
 	};
 
 	const schedule = writable<ScheduleItem[]>([]);
@@ -30,6 +29,19 @@
 	}
 
 	async function addItem() {
+		const validDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+		const validHours = Array.from({ length: 15 }, (_, i) => 6 + i + ':00');
+
+		if (!validDays.includes(formData.day)) {
+			alert('Neplatný deň! Zadajte jeden z dní: Pondelok, Utorok, Streda, Štvrtok, Piatok.');
+			return;
+		}
+
+		if (!validHours.includes(formData.hour)) {
+			alert('Neplatná hodina! Zadajte hodinu medzi 6:00 a 20:00.');
+			return;
+		}
+
 		if (
 			formData.day &&
 			formData.hour &&
@@ -74,7 +86,6 @@
 	</button>
 </div>-->
 
-<!-- Timetable -->
 <div class="container mx-auto py-8 px-3">
 	<h1 class="text-2xl font-bold mb-4 text-center">Rozvrh Hodín</h1>
 	<div class="overflow-x-auto">
@@ -114,7 +125,7 @@
 									role="button"
 									tabindex="0"
 									on:click={(e) => {
-										e.stopPropagation(); // Prevent parent click
+										e.stopPropagation();
 										deleteItem(item.id!);
 									}}
 									on:keydown={(e) => {
@@ -136,7 +147,6 @@
 	</div>
 </div>
 
-<!-- Add Item Modal -->
 {#if $showModal}
 	<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
 		<div
@@ -259,7 +269,7 @@
 	@media (max-width: 640px) {
 		.grid-cols-timetable {
 			display: grid;
-			grid-template-columns: 1fr; /* Mobile-friendly stacked layout */
+			grid-template-columns: 1fr;
 			grid-auto-rows: min-content;
 		}
 		.grid-cols-timetable > div {
@@ -268,7 +278,7 @@
 			align-items: center;
 		}
 		.grid-cols-timetable .sticky {
-			position: relative; /* Disable sticky on smaller screens */
+			position: relative;
 		}
 	}
 	.grid-cols-timetable {
@@ -298,10 +308,10 @@
 			border-color 0.2s;
 	}
 	.radio-input:checked {
-		background-color: #38bdf8; /* Light blue color for selected radio */
+		background-color: #38bdf8;
 		border-color: #38bdf8;
 	}
 	.radio-input:focus {
-		outline: 2px solid #2563eb; /* Focus outline for accessibility */
+		outline: 2px solid #2563eb;
 	}
 </style>

@@ -14,5 +14,5 @@ model ScheduleItem {
   subject   String
   teacher   String
   classroom String
-  type      String // 'lecture' or 'exercise'
+  type      String
 }

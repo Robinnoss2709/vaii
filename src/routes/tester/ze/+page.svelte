@@ -1,4 +1,6 @@
 <script>
+	// @ts-nocheck
+
 	import Quiz from '../../../lib/components/AbcdQuiz.svelte';
 	import quizData from '../../../lib/data/zaklady_ekonomie/quiz/ze_1.json';
 

@@ -21,7 +21,7 @@
 	];
 </script>
 
-<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+<div class="flex flex-col items-center justify-center bg-gray-100 p-6">
 	<h1 class="font-bold text-3xl text-gray-900 mb-6">Novinky</h1>
 	<div class="max-w-3xl w-full">
 		{#each articles as article}

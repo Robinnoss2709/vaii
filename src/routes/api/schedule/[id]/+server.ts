@@ -1,19 +1,21 @@
 import prisma from '../../../../lib/prisma/prisma';
 import type { RequestHandler } from './$types';
 
-export const DELETE: RequestHandler = async ({ params }) => {
+export const PATCH: RequestHandler = async ({ params, request }) => {
   const id = parseInt(params.id, 10);
-
-  if (isNaN(id)) {
-    return new Response(JSON.stringify({ error: 'Invalid ID' }), { status: 400 });
-  }
+  const updateData = await request.json();
 
   try {
-    await prisma.scheduleItem.delete({
-      where: { id }
+    const updatedItem = await prisma.scheduleItem.update({
+      where: { id },
+      data: {
+        ...updateData,
+        color: updateData.color // Aktualizácia farby
+      }
     });
-    return new Response(JSON.stringify({ success: true }), { status: 200 });
+    return new Response(JSON.stringify(updatedItem), { status: 200 });
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Item not found' }), { status: 404 });
+    return new Response(JSON.stringify({ error: 'Item not found or invalid data' }), { status: 404 });
   }
 };
+

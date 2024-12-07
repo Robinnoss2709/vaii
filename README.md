@@ -1,38 +1,21 @@
-# sv
+# FriCapsule
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+FriCapsule je aplikácia určená na učenie a testovanie sa pomocou poznámok. Umožňuje používateľom vytvárať, spravovať a testovať svoje vedomosti efektívne.
 
-## Creating a project
+## Funkcie
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Vytváranie a správa poznámok
+- Možnosť testovania sa na základe poznámok
+- Užívateľsky prívetivé rozhranie
+- Možnosť zdieľania poznámok s ostatnými
 
-```bash
-# create a new project in the current directory
-npx sv create
+## Požiadavky
 
-# create a new project in my-app
-npx sv create my-app
-```
+Na spustenie projektu je potrebné mať nainštalovaný [Node.js](https://nodejs.org/) a [npm](https://www.npmjs.com/).
 
-## Developing
+## Inštalácia
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+1. Klonuj tento repozitár do svojho lokálneho prostredia:
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+   ```bash
+   git clone https://github.com/tvoje-uzivatelske-meno/FriCapsule.git

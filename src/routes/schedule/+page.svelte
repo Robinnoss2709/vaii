@@ -14,11 +14,12 @@
 		classroom: string;
 		type: string;
 		color: string;
+		userId: string;
 	};
 
 	const schedule = writable<ScheduleItem[]>([]);
 	const showModal = writable(false);
-	const editMode = writable(false); // Nová premenná na sledovanie režimu úpravy
+	const editMode = writable(false);
 	let formData: ScheduleItem = {
 		day: '',
 		hour: '',
@@ -26,19 +27,19 @@
 		teacher: '',
 		classroom: '',
 		type: 'lecture',
-		color: 'bg-gray-400'
+		color: 'bg-gray-400',
+		userId: '' // Ensure userId is included if it's required for the schedule
 	};
 
 	let isEditing = false;
 	let editingItemId: number | null = null;
 
 	async function fetchSchedule() {
-		try {
-			const res = await fetch('/api/schedule');
-			if (!res.ok) throw new Error('Failed to fetch schedule');
+		const res = await fetch('/schedule');
+		if (res.ok) {
 			schedule.set(await res.json());
-		} catch (err) {
-			console.error('Error fetching schedule:', err);
+		} else {
+			console.error('Error fetching schedule');
 		}
 	}
 
@@ -50,20 +51,16 @@
 			teacher: '',
 			classroom: '',
 			type: 'lecture',
-			color: 'bg-gray-400'
+			color: 'bg-gray-400',
+			userId: '' // Reset userId as well if necessary
 		};
 		isEditing = false;
 		editingItemId = null;
 	}
 
 	function openModalForAdd(day: string, hour: string) {
-		// Skontrolujte, či už existuje predmet pre daný deň a hodinu
 		const existingItem = $schedule.find((item) => item.day === day && item.hour === hour);
-
-		if (existingItem) {
-			return;
-		}
-
+		if (existingItem) return;
 		formData.day = day;
 		formData.hour = hour;
 		isEditing = false;
@@ -77,59 +74,44 @@
 	}
 
 	async function saveItem() {
-		// Validácia pomocou Zod
 		const validationResult = scheduleSchema.safeParse(formData);
-
 		if (!validationResult.success) {
-			// Define the type for the errors object
-			type FormErrors = {
-				[key: string]: string; // dynamic keys with string values
-			};
-
-			// Initialize acc with the specified type
-			const errors: FormErrors = validationResult.error.errors.reduce((acc: FormErrors, err) => {
-				acc[err.path[0]] = err.message; // Extract error messages
-				return acc;
-			}, {} as FormErrors); // Specify the initial value type
-
-			formErrors.set(errors); // Set the errors
+			const errors = validationResult.error.errors.reduce(
+				(acc: Record<string, string>, err) => {
+					acc[err.path[0] as string] = err.message;
+					return acc;
+				},
+				{} as Record<string, string>
+			); // Explicitne definuj typ objektu ako Record<string, string>
+			formErrors.set(errors);
 			return;
 		}
-
-		formErrors.set({}); // Vyčistenie chýb, ak je validácia úspešná
-
-		if (!isEditing) {
-			await addItem();
-		} else {
+		formErrors.set({}); // Clear errors on successful validation
+		if (isEditing) {
 			await editItem(formData.id!, formData);
+		} else {
+			await addItem();
 		}
 		showModal.set(false);
 	}
 
 	async function addItem() {
 		const validDays = ['Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok'];
-		const validHours = Array.from({ length: 13 }, (_, i) => 7 + i + ':00');
+		const validHours = Array.from({ length: 13 }, (_, i) => `${7 + i}:00`);
 
-		if (!validDays.includes(formData.day)) {
-			alert('Neplatný deň!');
+		if (!validDays.includes(formData.day) || !validHours.includes(formData.hour)) {
+			alert('Neplatný deň alebo hodina!');
 			return;
 		}
 
-		if (!validHours.includes(formData.hour)) {
-			alert('Neplatná hodina!');
-			return;
-		}
-
-		// Odoslanie dát na server na pridanie nového predmetu
-		const response = await fetch('/api/schedule', {
+		const response = await fetch('/schedule', {
 			method: 'POST',
 			body: JSON.stringify(formData),
 			headers: { 'Content-Type': 'application/json' }
 		});
-
 		if (response.ok) {
 			const newItem = await response.json();
-			schedule.update((items) => [...items, newItem]); // Pridanie nového predmetu do miestneho stavu
+			schedule.update((items) => [...items, newItem]);
 			resetForm();
 		} else {
 			alert('Chyba pri pridávaní predmetu');
@@ -137,12 +119,11 @@
 	}
 
 	async function editItem(id: number, updatedData: Partial<ScheduleItem>) {
-		const response = await fetch(`/api/schedule/${id}`, {
+		const response = await fetch(`/schedule/${id}`, {
 			method: 'PATCH',
 			body: JSON.stringify(updatedData),
 			headers: { 'Content-Type': 'application/json' }
 		});
-
 		if (response.ok) {
 			const updatedItem = await response.json();
 			schedule.update((items) => items.map((item) => (item.id === id ? updatedItem : item)));
@@ -153,7 +134,7 @@
 
 	async function deleteItem(id: number) {
 		try {
-			const response = await fetch(`/api/schedule?id=${id}`, {
+			const response = await fetch(`/schedule?id=${id}`, {
 				method: 'DELETE'
 			});
 
@@ -319,7 +300,7 @@
 			<h2 class="text-xl font-bold mb-4 text-center">
 				{isEditing ? 'Uprav predmet' : 'Pridaj predmet'}
 			</h2>
-			<form class="flex flex-col gap-4" on:submit|preventDefault={saveItem}>
+			<form on:submit|preventDefault={saveItem} class="flex flex-col gap-4">
 				<div>
 					<label for="day" class="block text-sm font-bold mb-1">Deň</label>
 					<input
@@ -355,7 +336,6 @@
 						required
 					/>
 					<p class="text-red-500 text-sm mt-1">{$formErrors.subject}</p>
-					<!-- Chyba pre predmet -->
 				</div>
 
 				<div>

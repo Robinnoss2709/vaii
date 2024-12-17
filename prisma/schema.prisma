@@ -16,4 +16,5 @@ model ScheduleItem {
   classroom String
   type      String
   color     String @default("bg-gray-400") // Pridaj farbu s predvolenou hodnotou
+  userId    String // Priradenie používateľského ID
 }

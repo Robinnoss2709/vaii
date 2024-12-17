@@ -1,4 +1,4 @@
-import prisma from '../../../../lib/prisma/prisma';
+import prisma from '$lib/prisma/prisma';
 import type { RequestHandler } from './$types';
 
 export const PATCH: RequestHandler = async ({ params, request }) => {

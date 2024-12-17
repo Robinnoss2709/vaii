@@ -8,6 +8,7 @@ CREATE TABLE "ScheduleItem" (
     "classroom" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "color" TEXT NOT NULL DEFAULT 'bg-gray-400',
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "ScheduleItem_pkey" PRIMARY KEY ("id")
 );

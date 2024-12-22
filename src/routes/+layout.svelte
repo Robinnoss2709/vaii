@@ -19,7 +19,7 @@
 	});
 </script>
 
-<div class="relative flex flex-col mx-auto w-full text-sm sm:text-base min-h-screen bg-gray-200">
+<div class="relative flex flex-col mx-auto w-full text-sm sm:text-base min-h-screen">
 	<Header />
 	<main class="flex-grow">
 		{@render children()}

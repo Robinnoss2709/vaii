@@ -1,13 +1,17 @@
-<script>
-	let tabs = [
-		{ name: 'Domov', link: '/' },
-		{ name: 'Tester', link: '/tester' },
-		{ name: 'O nás', link: '/about' },
-		{ name: 'Novinky', link: '/novinky' },
-		{ name: 'Rozvrh', link: '/schedule' }
-	];
+<script lang="ts">
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 
-	let isOpen = false;
+	// Získaj session z page.data
+	let session = $page.data.session;
+
+	// Funkcia na odhlásenie používateľa
+	async function handleLogout() {
+		const response = await fetch('/auth/logout', { method: 'POST' });
+		if (response.ok) {
+			location.reload();
+		}
+	}
 </script>
 
 <header class="sticky top-0 px-6 py-6 flex items-center bg-gray-900 justify-between">
@@ -21,8 +25,8 @@
 		</a>
 	</div>
 
-	<div class="text-l hidden sm:flex items-center gap-10 transition-all duration-200 ease-in-out">
-		{#each tabs as tab}
+	<div class="text-l hidden sm:flex items-center gap-10">
+		{#each [{ name: 'Domov', link: '/' }, { name: 'Tester', link: '/tester' }, { name: 'O nás', link: '/about' }, { name: 'Novinky', link: '/novinky' }, { name: 'Rozvrh', link: '/schedule' }] as tab}
 			<a href={tab.link} class="underline-animation hover-text-green">
 				<p>{tab.name}</p>
 			</a>
@@ -30,48 +34,20 @@
 	</div>
 
 	<div class="hidden sm:flex items-center gap-4">
-		<a href="/login" class="py-2 px-3 rounded-full hover-text-green hover-border-green">
-			Prihlásenie
-		</a>
-
-		<a href="/register" class="basic-button hover-bg-green"> Registrácia </a>
-	</div>
-
-	<button
-		class="sm:hidden text-white text-2xl"
-		on:click={() => (isOpen = !isOpen)}
-		aria-label="Toggle navigation menu"
-	>
-		<i class="fa-solid fa-bars"></i>
-	</button>
-</header>
-
-{#if isOpen}
-	<div
-		class="bg-gray-900 fixed top-16 left-0 right-0 flex flex-col items-end gap-4 px-6 py-4 transition-opacity duration-200 z-50"
-	>
-		{#each tabs as tab}
-			<a
-				href={tab.link}
-				class="text-white hover-text-green py-2"
-				on:click={() => (isOpen = !isOpen)}
+		{#if session?.user}
+			<!-- Prihlásený používateľ -->
+			<span class="text-white font-bold"
+				>{session.user.user_metadata?.username || session.user.email}</span
 			>
-				{tab.name}
+			<button class="py-2 px-3 rounded-full text-white hover:text-red-500" on:click={handleLogout}>
+				Odhlásiť sa
+			</button>
+		{:else}
+			<!-- Neprihlásený používateľ -->
+			<a href="/login" class="py-2 px-3 rounded-full hover-text-green hover-border-green">
+				Prihlásenie
 			</a>
-		{/each}
-		<a
-			href="/login"
-			class="text-white hover-text-green py-1 border-2 border-transparent rounded-3xl hover:border-green-400"
-			on:click={() => (isOpen = !isOpen)}
-		>
-			Prihlásenie
-		</a>
-		<a
-			href="/register"
-			class="font-bold bg-slate-500 text-white font-popins hover:text-slate-700 py-2 px-4 rounded hover-bg-yellow"
-			on:click={() => (isOpen = !isOpen)}
-		>
-			Registrácia
-		</a>
+			<a href="/register" class="basic-button hover-bg-green bg-gray-500"> Registrácia </a>
+		{/if}
 	</div>
-{/if}
+</header>

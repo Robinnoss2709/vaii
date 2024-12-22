@@ -1,7 +1,7 @@
 <script>
 </script>
 
-<div class="flex flex-col items-center justify-center bg-gray-100 p-6">
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-200 p-6">
 	<h1 class="font-bold text-3xl text-gray-900 mb-6">O nás</h1>
 	<p class="max-w-3xl text-gray-700 text-center mb-8">
 		Etiam lorem ligula, euismod nec facilisis eleifend, tincidunt non velit. Sed augue ante, cursus

@@ -4,7 +4,7 @@
 	let message = '';
 </script>
 
-<div class="flex flex-col items-center justify-center p-6">
+<div class="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-200">
 	<h1 class="text-4xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">Kontakt</h1>
 	<div class="max-w-3xl w-full mb-8">
 		<h2 class="font-semibold text-2xl text-green-500 mb-2">Naše informácie</h2>
@@ -30,6 +30,6 @@
 			<textarea bind:value={message} placeholder="Tvoja správa" class="basic-input" required
 			></textarea>
 		</label>
-		<button type="submit" class="basic-button hover-bg-green"> Odoslať </button>
+		<button type="submit" class="basic-button hover-bg-green bg-gray-500"> Odoslať </button>
 	</form>
 </div>

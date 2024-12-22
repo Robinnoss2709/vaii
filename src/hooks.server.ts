@@ -67,6 +67,11 @@ const authGuard: Handle = async ({ event, resolve }) => {
     event.locals.session = session
     event.locals.user = user
 
+    const accessToken = event.cookies.get('sb-access-token')
+    if ((event.url.pathname === '/login' || event.url.pathname === '/register') && accessToken) {
+        throw redirect(303, '/')
+    }
+
     if (!event.locals.session && event.url.pathname.startsWith('/private')) {
         redirect(303, '/auth')
     }

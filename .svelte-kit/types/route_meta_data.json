@@ -1,0 +1,87 @@
+{
+	"/": [
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/about": [
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/auth/confirm": [
+		"src/routes/auth/confirm/+server.ts"
+	],
+	"/auth/error": [
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/auth/logout": [
+		"src/routes/auth/logout/+server.ts"
+	],
+	"/auth/signin": [
+		"src/routes/auth/signin/+page.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/auth/signup": [
+		"src/routes/auth/signup/+page.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/contact": [
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/novinky": [
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/profile": [
+		"src/routes/profile/+page.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts",
+		"src/routes/profile/+server.ts"
+	],
+	"/schedule": [
+		"src/routes/schedule/+page.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts",
+		"src/routes/schedule/+server.ts"
+	],
+	"/schedule/[id]": [
+		"src/routes/schedule/[id]/+server.ts"
+	],
+	"/subjects/[link]": [
+		"src/routes/subjects/[link]/+page.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/subjects/[link]/tabs": [
+		"src/routes/subjects/[link]/tabs/+page.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts",
+		"src/routes/subjects/[link]/tabs/+server.ts"
+	],
+	"/subjects/[link]/tabs/subtabs": [
+		"src/routes/subjects/[link]/tabs/subtabs/+page.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts",
+		"src/routes/subjects/[link]/tabs/subtabs/+server.ts"
+	],
+	"/subjects/[link]/tabs/subtabs/content": [
+		"src/routes/subjects/[link]/tabs/subtabs/content/+page.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts",
+		"src/routes/subjects/[link]/tabs/subtabs/content/+server.ts"
+	],
+	"/tester": [
+		"src/routes/tester/+page.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.ts",
+		"src/routes/tester/+server.ts"
+	],
+	"/tester/[id]": [
+		"src/routes/tester/[id]/+server.ts"
+	]
+}

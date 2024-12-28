@@ -1,88 +1,75 @@
-import prisma from '../../lib/prisma/prisma';
+import { error, json } from '@sveltejs/kit';
+import { supabase } from '$lib/supabaseClient';
+import type { RequestHandler } from './$types';
 
-// GET: Načítanie rozvrhu pre aktuálneho používateľa
-export async function GET({ locals }) {
-  const user = locals.user;
+export const GET: RequestHandler = async ({ locals }) => {
+  const session = await locals.safeGetSession();
 
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  if (!session) {
+    throw error(401, 'Unauthorized');
   }
 
-  const scheduleItems = await prisma.scheduleItem.findMany({
-    where: { userId: user.id },
-  });
+  const { data: scheduleItems, error: err } = await supabase
+    .from('scheduleitem')
+    .select('*')
+    .eq('user_id', session.user.id);
 
-  return new Response(JSON.stringify(scheduleItems), { status: 200 });
-}
+  if (err) {
+    throw error(500, 'Error loading schedule');
+  }
 
-// POST: Vytvorenie položky rozvrhu pre aktuálneho používateľa
-export async function POST({ request, locals }) {
-  const user = locals.user;
+  return json(scheduleItems);
+};
 
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+export const POST: RequestHandler = async ({ request, locals }) => {
+  const session = await locals.safeGetSession();
+  if (!session) {
+    throw error(401, 'Unauthorized');
   }
 
   const data = await request.json();
 
-  const scheduleItem = await prisma.scheduleItem.create({
-    data: {
+  const { data: scheduleItem, error: err } = await supabase
+    .from('scheduleitem')
+    .insert([{
       ...data,
-      userId: user.id, // Priradenie aktuálneho používateľa
-      color: data.color || 'bg-gray-400', // Default farba
-    },
-  });
+      user_id: session.user.id,
+    }])
+    .select()
+    .single();
 
-  return new Response(JSON.stringify(scheduleItem), { status: 201 });
-}
+  if (err) {
+    throw error(500, err.message);
+  }
 
-// DELETE: Vymazanie položky rozvrhu aktuálneho používateľa
-export async function DELETE({ url, locals }) {
-  const user = locals.user;
+  return json(scheduleItem);
+};
 
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+export const DELETE: RequestHandler = async ({ url, locals }) => {
+  if (!locals.isAdmin) {
+    throw error(401, 'Unauthorized');
+  }
+  const session = await locals.safeGetSession();
+
+  if (!session) {
+    throw error(401, 'Unauthorized');
   }
 
   const id = url.searchParams.get('id');
 
-  if (!id || isNaN(parseInt(id, 10))) {
-    return new Response(JSON.stringify({ error: 'Invalid ID' }), { status: 400 });
+  if (!id) {
+    throw error(400, 'Invalid ID');
   }
 
-  try {
-    await prisma.scheduleItem.deleteMany({
-      where: { id: parseInt(id, 10), userId: user.id },
-    });
-    return new Response(JSON.stringify({ success: true }), { status: 200 });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: 'Item not found' }), { status: 404 });
-  }
-}
+  const { error: err } = await supabase
+    .from('scheduleitem')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', session.user.id);
 
-// PATCH: Aktualizácia položky rozvrhu aktuálneho používateľa
-export async function PATCH({ request, locals }) {
-  const user = locals.user;
-
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  if (err) {
+    throw error(500, err.message);
   }
 
-  const data = await request.json();
-  const { id, ...updateData } = data;
-
-  if (!id || typeof id !== 'number') {
-    return new Response(JSON.stringify({ error: 'Invalid ID' }), { status: 400 });
-  }
-
-  try {
-    const updatedScheduleItem = await prisma.scheduleItem.updateMany({
-      where: { id, userId: user.id },
-      data: updateData,
-    });
-
-    return new Response(JSON.stringify(updatedScheduleItem), { status: 200 });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: 'Item not found or invalid data' }), { status: 404 });
-  }
-}
+  return json({ success: true });
+};

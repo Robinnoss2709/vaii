@@ -1,0 +1,48 @@
+.bullet-list {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+}
+
+.list-item {
+    margin-bottom: 0.5rem;
+}
+.ordered-list {
+    counter-reset: section; /* Resetujeme číslovanie pre každý zoznam */
+    list-style: none; /* Odstránime predvolené číslovanie */
+    margin-left: 0;
+}
+
+/* Základný štýl pre každý prvok zoznamu */
+.ordered-list > .list-item {
+    margin-bottom: 0.5rem;
+    display: block; /* Zabezpečíme, že text nebude blokovaný flexom */
+    margin-left: 1.5rem; /* Odsadenie pre zoznam */
+    word-wrap: break-word; /* Zabezpečíme, že dlhý text sa správne zalomí */
+    padding-left: 1.5rem; /* Odsadenie pre text za číslovaním */
+}
+
+/* Číslovanie v rámci zoznamu */
+.ordered-list > .list-item:before {
+    content: counters(section, ".") "."; /* Číslovanie s bodkou */
+    counter-increment: section; /* Zvyšujeme číslovanie pri každom zozname */
+    position: absolute; /* Umistíme číslovanie na začiatok */
+    margin-left: -1.5rem; /* Posunutie na začiatok riadku */
+}
+
+/* Text v zozname */
+.ordered-list > .list-item p {
+    margin: 0;
+    padding-left: 1rem; /* Pridanie malej medzery medzi číslovaním a textom */
+}
+
+/* Pre vnútorné zoznamy (sub-úrovne) pridáme ďalšie odsadenie */
+.ordered-list .ordered-list {
+    margin-left: 2rem; /* Odsadenie pre vnútorné zoznamy */
+}
+/* Pre viacúrovňové zoznamy obmedzíme šírku */
+.ordered-list .ordered-list .ordered-list {
+    margin-left: 3rem; /* Odsadenie pre 3. úroveň */
+}
+.ordered-list .ordered-list .ordered-list .ordered-list {
+    margin-left: 4rem; /* Odsadenie pre 4. úroveň */
+}

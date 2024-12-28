@@ -1,21 +1,32 @@
-import prisma from '$lib/prisma/prisma';
+import { error, json } from '@sveltejs/kit';
+import { supabase } from '$lib/supabaseClient';
 import type { RequestHandler } from './$types';
 
-export const PATCH: RequestHandler = async ({ params, request }) => {
-  const id = parseInt(params.id, 10);
+export const PATCH: RequestHandler = async ({ params, request, locals }) => {
+  const session = await locals.safeGetSession();
+
+  if (!session) {
+    throw error(401, 'Unauthorized');
+  }
+
+  const { id } = params;
   const updateData = await request.json();
 
-  try {
-    const updatedItem = await prisma.scheduleItem.update({
-      where: { id },
-      data: {
-        ...updateData,
-        color: updateData.color // Aktualizácia farby
-      }
-    });
-    return new Response(JSON.stringify(updatedItem), { status: 200 });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: 'Item not found or invalid data' }), { status: 404 });
+  if (!id) {
+    throw error(400, 'Invalid ID');
   }
-};
 
+  const { data: updatedItem, error: err } = await supabase
+    .from('scheduleitem')
+    .update(updateData)
+    .eq('id', id)
+    .eq('user_id', session.user.id)
+    .select()
+    .single();
+
+  if (err) {
+    throw error(500, err.message);
+  }
+
+  return json(updatedItem);
+};

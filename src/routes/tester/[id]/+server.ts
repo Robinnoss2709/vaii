@@ -1,66 +1,28 @@
-import prisma from '$lib/prisma/prisma';
-import { subjectCardSchema } from '$lib/schemas/tester/subjectCardForm';
-import { ZodError } from 'zod';
+import { error, json } from '@sveltejs/kit';
+import { supabase } from '$lib/supabaseClient';
 import type { RequestHandler } from './$types';
 
-const authorizedEmail = 'fricapsuleceo@gmail.com';
-
-
-export const PATCH: RequestHandler = async ({ request, params, locals }) => {
-    const session = locals.session; // Predpokladá sa, že session je v middleware
-    const email = session?.user?.email;
-
-    if (email !== authorizedEmail) {
-        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 403 });
+export const PATCH: RequestHandler = async ({ params, request, locals }) => {
+    if (!locals.isAdmin) {
+        throw error(401, 'Unauthorized');
     }
-
     const { id } = params;
+    const updateData = await request.json();
 
     if (!id) {
-        return new Response(JSON.stringify({ error: 'ID is required' }), { status: 400 });
+        throw error(400, 'Invalid ID');
     }
 
-    const data = await request.json();
+    const { data: updatedItem, error: err } = await supabase
+        .from('subject_card')
+        .update(updateData)
+        .eq('id', id)
+        .select()
+        .single();
 
-    // Validácia dát so Zod
-    try {
-        const validatedData = subjectCardSchema.parse(data);
-
-        const updatedSubject = await prisma.subjectCard.update({
-            where: { id: Number(id) },
-            data: validatedData,
-        });
-
-        return new Response(JSON.stringify(updatedSubject), { status: 200 });
-    } catch (error) {
-        if (error instanceof ZodError) {
-            return new Response(JSON.stringify({ error: 'Validation failed', issues: error.errors }), { status: 400 });
-        }
-        console.error('Error updating subject:', error);
-        return new Response(JSON.stringify({ error: 'Unable to update subject' }), { status: 500 });
-    }
-};
-
-export const DELETE: RequestHandler = async ({ params, locals }) => {
-    const session = locals.session; // Predpokladá sa, že session je v middleware
-    const email = session?.user?.email;
-
-    if (email !== authorizedEmail) {
-        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 403 });
+    if (err) {
+        throw error(500, err.message);
     }
 
-    const id = parseInt(params.id, 10);
-    if (isNaN(id)) {
-        return new Response(JSON.stringify({ error: 'Invalid subject ID' }), { status: 400 });
-    }
-
-    try {
-        await prisma.subjectCard.delete({
-            where: { id },
-        });
-        return new Response(JSON.stringify({ message: `Subject with ID ${id} deleted` }), { status: 200 });
-    } catch (error) {
-        console.error('Error deleting subject:', error);
-        return new Response(JSON.stringify({ error: 'Subject not found' }), { status: 404 });
-    }
+    return json(updatedItem);
 };

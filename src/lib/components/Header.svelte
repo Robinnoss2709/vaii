@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
-	import type { Session } from "@supabase/supabase-js";
-	import { supabase } from "$lib/supabaseClient";
+	import type { Session, SupabaseClient } from "@supabase/supabase-js";
 	import { onMount } from "svelte";
 
 	export let session: Session | null;
+	export let supabase: SupabaseClient;
 
 	let getUserName: string | null;
 

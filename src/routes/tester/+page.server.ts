@@ -1,10 +1,9 @@
 import { error, redirect } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
 
-    const { data: subjectCards, error: err } = await supabase
+    const { data: subjectCards, error: err } = await locals.supabase
         .from('subject_card')
         .select('*')
 

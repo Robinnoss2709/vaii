@@ -1,10 +1,9 @@
 import { error, json } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ locals }) => {
 
-    const { data: subjectCard, error: err } = await supabase
+    const { data: subjectCard, error: err } = await locals.supabase
         .from('subject_card')
         .select('*');
     if (err) {
@@ -20,7 +19,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     const data = await request.json();
 
-    const { data: subjectCard, error: err } = await supabase
+    const { data: subjectCard, error: err } = await locals.supabase
         .from('subject_card')
         .insert([{
             ...data,
@@ -48,7 +47,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         throw error(400, 'Invalid ID');
     }
 
-    const { error: err } = await supabase
+    const { error: err } = await locals.supabase
         .from('subject_card')
         .delete()
         .eq('id', id)

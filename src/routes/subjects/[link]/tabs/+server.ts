@@ -1,12 +1,11 @@
 import { error as kitError, json } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
 
 // GET endpoint – načítanie tabov pre konkrétny predmet
-export const GET = async ({ params }) => {
+export const GET = async ({ params, locals }) => {
     const { link } = params;
 
     // Zistíme ID predmetu podľa linku
-    const { data: subject, error: subjectError } = await supabase
+    const { data: subject, error: subjectError } = await locals.supabase
         .from('subject_card')
         .select('id')
         .eq('link', link)
@@ -16,7 +15,7 @@ export const GET = async ({ params }) => {
         return json({ error: 'Predmet nenájdený' }, { status: 404 });
     }
 
-    const { data: panels, error: panelError } = await supabase
+    const { data: panels, error: panelError } = await locals.supabase
         .from('subject_panel')
         .select('id, name, subject_id')
         .eq('subject_id', subject.id);
@@ -38,7 +37,7 @@ export const POST = async ({ params, request, locals }) => {
 
 
     // Zistíme ID predmetu podľa linku
-    const { data: subject, error: subjectError } = await supabase
+    const { data: subject, error: subjectError } = await locals.supabase
         .from('subject_card')
         .select('id')
         .eq('link', link)
@@ -51,7 +50,7 @@ export const POST = async ({ params, request, locals }) => {
 
 
 
-    const { data, error } = await supabase
+    const { data, error } = await locals.supabase
         .from('subject_panel')
         .insert({ name, subject_id: subject.id })
         .select()
@@ -73,7 +72,7 @@ export const DELETE = async ({ url, locals }) => {
         return new Response('ID tabu je povinné.', { status: 400 });
     }
 
-    const { error } = await supabase.from('subject_panel').delete().eq('id', panelId);
+    const { error } = await locals.supabase.from('subject_panel').delete().eq('id', panelId);
 
     if (error) {
         return new Response('Chyba pri odstraňovaní tabu.', { status: 500 });
@@ -93,7 +92,7 @@ export const PATCH = async ({ request, locals }) => {
         return new Response('ID a nový názov tabu sú povinné.', { status: 400 });
     }
 
-    const { error } = await supabase
+    const { error } = await locals.supabase
         .from('subject_panel')
         .update({ name })
         .eq('id', id);

@@ -1,5 +1,4 @@
 import { error, json } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ locals }) => {
@@ -9,7 +8,7 @@ export const GET: RequestHandler = async ({ locals }) => {
     throw error(401, 'Unauthorized');
   }
 
-  const { data: scheduleItems, error: err } = await supabase
+  const { data: scheduleItems, error: err } = await locals.supabase
     .from('scheduleitem')
     .select('*')
     .eq('user_id', session.user.id);
@@ -29,7 +28,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   const data = await request.json();
 
-  const { data: scheduleItem, error: err } = await supabase
+  const { data: scheduleItem, error: err } = await locals.supabase
     .from('scheduleitem')
     .insert([{
       ...data,
@@ -61,7 +60,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     throw error(400, 'Invalid ID');
   }
 
-  const { error: err } = await supabase
+  const { error: err } = await locals.supabase
     .from('scheduleitem')
     .delete()
     .eq('id', id)

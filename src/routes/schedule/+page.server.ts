@@ -1,5 +1,4 @@
 import { error } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -9,7 +8,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         throw error(401, 'Unauthorized');
     }
 
-    const { data: scheduleItems, error: err } = await supabase
+    const { data: scheduleItems, error: err } = await locals.supabase
         .from('scheduleitem')
         .select('*')
         .eq('user_id', session.user.id);

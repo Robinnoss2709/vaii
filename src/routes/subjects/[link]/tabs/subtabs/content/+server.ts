@@ -1,5 +1,4 @@
 import { json, error } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient'; // Predpokladáme, že máš Supabase klienta
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -29,7 +28,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             tableName = 'private_content';
         }
 
-        const { data, error: insertError } = await supabase
+        const { data, error: insertError } = await locals.supabase
             .from(tableName)
             .insert([contentData]);
 
@@ -50,7 +49,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 // /src/routes/api/getContent.ts
 
 
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, locals }) => {
     try {
         const subtabId = url.searchParams.get('subtabId'); // Predpokladám, že subtabId posielaš ako query parameter
 
@@ -59,7 +58,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }
 
         // Načítame obsah pre daný subtabId
-        const { data, error } = await supabase
+        const { data, error } = await locals.supabase
             .from('official_content') // Alebo tabuľka, z ktorej chceš načítať
             .select('id, content_type, content, created_at')
             .eq('subtab_id', subtabId);
@@ -89,7 +88,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     }
 
     try {
-        const { error: deleteError } = await supabase
+        const { error: deleteError } = await locals.supabase
             .from('official_content')
             .delete()
             .eq('id', id);
@@ -121,7 +120,7 @@ export const PATCH = async ({ request, locals }) => {
     }
 
     // Aktualizácia obsahu v tabuľke `official_content`
-    const { error: err } = await supabase
+    const { error: err } = await locals.supabase
         .from('official_content')
         .update({ content })
         .eq('id', id);

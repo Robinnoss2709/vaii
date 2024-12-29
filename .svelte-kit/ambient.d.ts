@@ -26,6 +26,8 @@
  * ```
  */
 declare module '$env/static/private' {
+	export const JWT_SECRET: string;
+	export const SUPABASE_SERVICE_ROLE_KEY: string;
 	export const ALLUSERSPROFILE: string;
 	export const APPDATA: string;
 	export const CHROME_CRASHPAD_PIPE_NAME: string;
@@ -140,6 +142,8 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
+		JWT_SECRET: string;
+		SUPABASE_SERVICE_ROLE_KEY: string;
 		ALLUSERSPROFILE: string;
 		APPDATA: string;
 		CHROME_CRASHPAD_PIPE_NAME: string;

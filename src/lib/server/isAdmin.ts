@@ -1,7 +1,7 @@
-import { supabase } from "$lib/supabaseClient";
+import type { SupabaseClient } from '@supabase/supabase-js';
 
-export async function isAdmin(userId: string): Promise<boolean> {
-    const { data, error } = await supabase
+export async function isAdmin(userId: string, locals: { supabase: SupabaseClient }): Promise<boolean> {
+    const { data, error } = await locals.supabase
         .from('profiles')
         .select('role')
         .eq('id', userId)

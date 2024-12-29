@@ -1,5 +1,4 @@
 import { error, json } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
 import type { RequestHandler } from './$types';
 
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
@@ -16,7 +15,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     throw error(400, 'Invalid ID');
   }
 
-  const { data: updatedItem, error: err } = await supabase
+  const { data: updatedItem, error: err } = await locals.supabase
     .from('scheduleitem')
     .update(updateData)
     .eq('id', id)

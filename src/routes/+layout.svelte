@@ -23,7 +23,7 @@
 <div
   class="relative flex flex-col mx-auto w-full text-sm sm:text-base min-h-screen"
 >
-  <Header {session} />
+  <Header {session} {supabase} />
   <main class="flex-grow z-20 relative">
     {@render children()}
   </main>

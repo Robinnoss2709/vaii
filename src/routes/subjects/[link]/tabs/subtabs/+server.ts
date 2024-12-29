@@ -1,15 +1,15 @@
 import { error, json } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
+
 
 // GET subtabs for a specific tab
-export const GET = async ({ url }) => {
+export const GET = async ({ url, locals }) => {
     const tabId = url.searchParams.get('tab_id');
 
     if (!tabId) {
         throw error(400, 'tab_id parameter is required');
     }
 
-    const { data: subtabs, error: err } = await supabase
+    const { data: subtabs, error: err } = await locals.supabase
         .from('subject_panel_sub_tabs')
         .select('*')
         .eq('panel_id', tabId);
@@ -34,7 +34,7 @@ export const POST = async ({ request, locals }) => {
         throw error(400, 'panel_id and name are required');
     }
 
-    const { data, error: err } = await supabase
+    const { data, error: err } = await locals.supabase
         .from('subject_panel_sub_tabs')
         .insert({ panel_id, name })
         .select('*')
@@ -60,7 +60,7 @@ export const PATCH = async ({ request, locals }) => {
         throw error(400, 'id and name are required');
     }
 
-    const { error: err } = await supabase
+    const { error: err } = await locals.supabase
         .from('subject_panel_sub_tabs')
         .update({ name })
         .eq('id', id);
@@ -84,7 +84,7 @@ export const DELETE = async ({ url, locals }) => {
         throw error(400, 'id parameter is required');
     }
 
-    const { error: err } = await supabase
+    const { error: err } = await locals.supabase
         .from('subject_panel_sub_tabs')
         .delete()
         .eq('id', id);

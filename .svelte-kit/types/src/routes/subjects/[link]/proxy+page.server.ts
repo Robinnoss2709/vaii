@@ -1,12 +1,11 @@
 // @ts-nocheck
 import { error } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
 import type { PageServerLoad } from './$types';
 
 export const load = async ({ params, locals }: Parameters<PageServerLoad>[0]) => {
     const { link } = params;
 
-    const { data: subjectCard, error: err } = await supabase
+    const { data: subjectCard, error: err } = await locals.supabase
         .from('subject_card')
         .select('*')
         .eq('link', link)

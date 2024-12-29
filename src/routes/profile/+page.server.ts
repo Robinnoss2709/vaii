@@ -1,5 +1,4 @@
 import { error, redirect } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ request, locals }) => {
@@ -13,7 +12,7 @@ export const load: PageServerLoad = async ({ request, locals }) => {
     let username = null;
 
     if (session) {
-        const { data, error } = await supabase
+        const { data, error } = await locals.supabase
             .from("profiles")
             .select("username")
             .eq("id", session.user.id)

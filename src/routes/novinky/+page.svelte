@@ -22,7 +22,7 @@
 </script>
 
 <div
-    class="min-h-screen flex flex-col items-center justify-center bg-gray-200 p-6"
+    class="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6 pt-20"
 >
     <h1 class="font-bold text-3xl text-gray-900 mb-6">Novinky</h1>
     <div class="max-w-3xl w-full">

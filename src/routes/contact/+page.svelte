@@ -5,7 +5,7 @@
 </script>
 
 <div
-    class="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-200"
+    class="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6 pt-20"
 >
     <h1
         class="text-4xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center"

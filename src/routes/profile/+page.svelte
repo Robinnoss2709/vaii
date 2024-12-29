@@ -19,6 +19,8 @@
         });
 
         if (res.ok) {
+            location.reload();
+
             alert("Profil bol aktualizovaný!");
         } else {
             alert("Zlyhalo aktualizovanie profilu.");

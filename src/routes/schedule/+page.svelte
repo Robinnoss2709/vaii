@@ -122,7 +122,9 @@
 	onMount(fetchSchedule);
 </script>
 
-<div class="min-h-screen bg-gray-200">
+<div
+	class="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6 pt-5"
+>
 	<div class="container mx-auto py-6 px-3">
 		<h1 class="font-bold text-3xl text-gray-900 mb-6 text-center">
 			Rozvrh Hodín

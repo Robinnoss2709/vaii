@@ -143,7 +143,7 @@
     <!-- Content Title -->
     <div class="mx-16 my-10">
         {#if selectedTab !== null}
-            <h2 class="text-2xl font-semibold text-center">
+            <h2 class="text-2xl font-semibold text-center text-gray-900">
                 {tabs.find((tab) => tab.id === selectedTab)?.name}
                 {#if selectedSubTab !== null}
                     - {tabs
